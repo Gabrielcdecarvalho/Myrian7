@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal da Myrian - Documentos da Creche</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bibliotecas para funcionalidades -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://unpkg.com/docx@8.2.2/build/index.js"></script>
+    
+    <style>
+        /* Estilos melhorados para correções */
+        .ai-buttons-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            padding: 24px;
+            margin: 24px 0;
+            text-align: center;
+        }
+        
+        .ai-buttons-section h3 {
+            color: white;
+            margin-bottom: 16px;
+            font-size: 1.2rem;
+        }
+        
+        .ai-buttons-container {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn-ai-improved {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+        }
+        
+        .btn-ai-improved:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(79, 172, 254, 0.4);
+        }
+        
+        .btn-ai-google {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffa500 100%);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+        
+        .btn-ai-google:hover {
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+        }
+        
+        /* Tutorial integrado */
+        .tutorial-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            margin: 24px 0;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .tutorial-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+        
+        .tutorial-step {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .tutorial-step-number {
+            background: #4c51bf;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            font-weight: bold;
+        }
+        
+        /* Melhorias nos formulários */
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: #a0aec0;
+            font-style: italic;
+        }
+        
+        /* Indicador de gravação melhorado */
+        .recording-status {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+            padding: 12px;
+            background: rgba(239, 68, 68, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        .recording-status.active {
+            display: flex;
+        }
+        
+        .recording-dot {
+            width: 12px;
+            height: 12px;
+            background: #ef4444;
+            border-radius: 50%;
+            animation: pulse 1s infinite;
+        }
+        
+        /* Área de resultado melhorada */
+        .result-actions-improved {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
+        .btn-download {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+        
+        .btn-download:hover {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        }
+        
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .ai-buttons-container {
+                flex-direction: column;
+            }
+            
+            .tutorial-steps {
+                grid-template-columns: 1fr;
+            }
+            
+            .result-actions-improved {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">Portal da Myrian</h1>
+                <p class="subtitle">Criador de Documentos da Creche</p>
+                <div class="badge">👑 Especialmente para Coordenadora Myrian</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Home Section (reorganizada conforme feedback) -->
+            <section id="home" class="section active">
+                
+                <!-- 1º: Como usar (conforme solicitado) -->
+                <div class="tutorial-section">
+                    <h2>📱 Como usar (Passo a Passo)</h2>
+                    <div class="tutorial-steps">
+                        <div class="tutorial-step">
+                            <div class="tutorial-step-number">1</div>
+                            <h4>Escolha o Documento</h4>
+                            <p>Clique no tipo que precisa criar</p>
+                        </div>
+                        <div class="tutorial-step">
+                            <div class="tutorial-step-number">2</div>
+                            <h4>Preencha os Dados</h4>
+                            <p>Complete as informações básicas</p>
+                        </div>
+                        <div class="tutorial-step">
+                            <div class="tutorial-step-number">3</div>
+                            <h4>Escreva ou Grave</h4>
+                            <p>Digite ou grave suas observações</p>
+                        </div>
+                        <div class="tutorial-step">
+                            <div class="tutorial-step-number">4</div>
+                            <h4>Gere o Documento</h4>
+                            <p>Clique "Criar" e receba texto profissional</p>
+                        </div>
+                        <div class="tutorial-step">
+                            <div class="tutorial-step-number">5</div>
+                            <h4>Baixe ou Compartilhe</h4>
+                            <p>Word, PDF, WhatsApp ou Email</p>
+                        </div>
+                        <div class="tutorial-step">
+                            <div class="tutorial-step-number">6</div>
+                            <h4>Aprimore com IA</h4>
+                            <p>Use ChatGPT ou Google AI (opcional)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2º: Tipos de documento (conforme solicitado) -->
+                <div class="document-types">
+                    <div class="document-card" onclick="showForm('pad')">
+                        <div class="card-icon">📋</div>
+                        <h3>PAD</h3>
+                        <p>Plano de Atendimento Diferenciado</p>
+                        <div class="card-badge">Inclusão</div>
+                    </div>
+
+                    <div class="document-card" onclick="showForm('relatorio')">
+                        <div class="card-icon">📊</div>
+                        <h3>Relatório Individual</h3>
+                        <p>Desenvolvimento da criança</p>
+                        <div class="card-badge">Para Pais</div>
+                    </div>
+
+                    <div class="document-card" onclick="showForm('ata')">
+                        <div class="card-icon">📝</div>
+                        <h3>Ata de Reunião</h3>
+                        <p>Registro oficial de reuniões</p>
+                        <div class="card-badge">Formal</div>
+                    </div>
+                </div>
+
+                <!-- 3º: Seção de IA melhorada (conforme feedback) -->
+                <div class="ai-buttons-section">
+                    <h3>🤖 Aprimore com Inteligência Artificial</h3>
+                    <p style="color: rgba(255,255,255,0.9); margin-bottom: 20px;">
+                        Depois de criar seu documento, use estas ferramentas para deixá-lo ainda mais profissional:
+                    </p>
+                    <div class="ai-buttons-container">
+                        <a href="https://chat.openai.com" target="_blank" class="btn-ai-improved">
+                            <span>🤖</span>
+                            <span>Abrir ChatGPT</span>
+                        </a>
+                        <a href="https://aistudio.google.com" target="_blank" class="btn-ai-improved btn-ai-google">
+                            <span>🎨</span>
+                            <span>Abrir Google AI</span>
+                        </a>
+                        <button class="btn-ai-improved" onclick="showAITutorial()" style="background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);">
+                            <span>📖</span>
+                            <span>Como Usar IA</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PAD Form (corrigido conforme feedback) -->
+            <section id="pad-form" class="section">
+                <div class="form-container">
+                    <div class="form-header">
+                        <h2>📋 Criar PAD (Plano de Atendimento Diferenciado)</h2>
+                        <p>Preencha as informações da criança e suas observações</p>
+                    </div>
+
+                    <form class="document-form">
+                        <!-- Dados da Criança -->
+                        <div class="form-section">
+                            <h3>👶 Dados da Criança</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="pad-nome">Nome Completo da Criança *</label>
+                                    <input type="text" id="pad-nome" placeholder="Ex: João Silva Santos" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="pad-idade">Idade *</label>
+                                    <input type="text" id="pad-idade" placeholder="Ex: 3 anos e 6 meses" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="pad-nascimento">Data de Nascimento</label>
+                                    <input type="date" id="pad-nascimento">
+                                </div>
+                                <div class="form-group">
+                                    <label for="pad-responsavel">Responsável Legal</label>
+                                    <input type="text" id="pad-responsavel" placeholder="Ex: Maria Silva Santos">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Informações do Documento -->
+                        <div class="form-section">
+                            <h3>📄 Informações do Documento</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="pad-data">Data do Documento *</label>
+                                    <input type="date" id="pad-data" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="pad-periodo">Período de Observação *</label>
+                                    <input type="text" id="pad-periodo" placeholder="Ex: Março a Maio de 2025" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="pad-elaborado">Elaborado por *</label>
+                                <input type="text" id="pad-elaborado" value="Myrian Fortuna - Coordenadora Pedagógica" required>
+                            </div>
+                        </div>
+
+                        <!-- Necessidades e Diagnóstico -->
+                        <div class="form-section">
+                            <h3>🎯 Necessidades Identificadas</h3>
+                            <div class="form-group">
+                                <label for="pad-necessidades">Descreva as necessidades específicas da criança *</label>
+                                <textarea id="pad-necessidades" rows="4" placeholder="Ex: Dificuldades de concentração, necessita de estratégias diferenciadas para manter o foco durante atividades dirigidas..." required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="pad-diagnostico">Diagnóstico ou Suspeita (se houver)</label>
+                                <input type="text" id="pad-diagnostico" placeholder="Ex: TEA, TDAH, Deficiência Intelectual, etc.">
+                            </div>
+                        </div>
+
+                        <!-- Estratégias e Objetivos -->
+                        <div class="form-section">
+                            <h3>🎯 Estratégias e Objetivos</h3>
+                            <div class="form-group">
+                                <label for="pad-objetivos">Objetivos do Plano *</label>
+                                <textarea id="pad-objetivos" rows="3" placeholder="Ex: Desenvolver habilidades de concentração, promover integração social, estimular desenvolvimento cognitivo..." required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="pad-estrategias">Estratégias Propostas *</label>
+                                <textarea id="pad-estrategias" rows="4" placeholder="Ex: Atividades de curta duração, estímulos visuais e táteis, momentos estruturados de movimento..." required></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Observações com áudio corrigido -->
+                        <div class="form-section">
+                            <h3>📝 Observações Adicionais</h3>
+                            <div class="form-group">
+                                <label for="pad-observacoes">Suas Observações Detalhadas (Opcional)</label>
+                                <textarea id="pad-observacoes" rows="6" placeholder="Ex: João demonstra interesse por atividades lúdicas e responde bem a estímulos visuais. Durante as atividades em grupo, apresenta comportamento agitado..."></textarea>
+                            </div>
+                            
+                            <!-- Seção de áudio corrigida -->
+                            <div class="audio-section">
+                                <h4>🎤 Ou grave suas observações:</h4>
+                                <div class="audio-recorder">
+                                    <button type="button" id="pad-record-btn" class="btn btn-audio">
+                                        <span class="record-icon">🎤</span>
+                                        <span class="record-text">Gravar Observações</span>
+                                    </button>
+                                    
+                                    <!-- Status de gravação corrigido -->
+                                    <div id="pad-recording-status" class="recording-status">
+                                        <div class="recording-dot"></div>
+                                        <span>Gravando... Clique novamente para parar</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Container para reprodução -->
+                                <div id="pad-audio-playback" style="display: none;">
+                                    <h5>🎵 Áudio gravado:</h5>
+                                    <audio controls style="width: 100%; margin: 8px 0;"></audio>
+                                    <div class="audio-actions">
+                                        <button type="button" class="btn btn-secondary" onclick="downloadAudio('pad')">
+                                            📥 Baixar Áudio
+                                        </button>
+                                        <button type="button" class="btn btn-primary" onclick="transcribeAudio('pad')">
+                                            📝 Converter para Texto
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botões de ação -->
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="showHome()">
+                                ← Voltar
+                            </button>
+                            <button type="button" class="btn btn-primary" onclick="createDocument('pad')">
+                                ✨ Criar PAD Profissional
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Relatório Form (estrutura similar corrigida) -->
+            <section id="relatorio-form" class="section">
+                <div class="form-container">
+                    <div class="form-header">
+                        <h2>📊 Criar Relatório Individual</h2>
+                        <p>Relatório de desenvolvimento para enviar aos pais</p>
+                    </div>
+
+                    <form class="document-form">
+                        <!-- Dados básicos -->
+                        <div class="form-section">
+                            <h3>👶 Dados da Criança</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="relatorio-nome">Nome Completo da Criança *</label>
+                                    <input type="text" id="relatorio-nome" placeholder="Ex: Ana Clara Oliveira" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="relatorio-idade">Idade *</label>
+                                    <input type="text" id="relatorio-idade" placeholder="Ex: 4 anos e 2 meses" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="relatorio-turma">Turma</label>
+                                    <input type="text" id="relatorio-turma" placeholder="Ex: Maternal II">
+                                </div>
+                                <div class="form-group">
+                                    <label for="relatorio-periodo">Período do Relatório *</label>
+                                    <input type="text" id="relatorio-periodo" placeholder="Ex: 1º Semestre 2025" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Desenvolvimento -->
+                        <div class="form-section">
+                            <h3>🧠 Desenvolvimento</h3>
+                            <div class="form-group">
+                                <label for="relatorio-cognitivo">Desenvolvimento Cognitivo</label>
+                                <textarea id="relatorio-cognitivo" rows="3" placeholder="Ex: Demonstra curiosidade e interesse pelas atividades propostas, consegue manter atenção por períodos adequados à idade..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="relatorio-motor">Desenvolvimento Motor</label>
+                                <textarea id="relatorio-motor" rows="3" placeholder="Ex: Apresenta coordenação motora adequada para a idade, participa ativamente de atividades físicas..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="relatorio-social">Desenvolvimento Social e Emocional</label>
+                                <textarea id="relatorio-social" rows="3" placeholder="Ex: Interage bem com colegas, demonstra empatia, consegue expressar sentimentos de forma adequada..."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Observações gerais com áudio -->
+                        <div class="form-section">
+                            <h3>📝 Observações Gerais</h3>
+                            <div class="form-group">
+                                <label for="relatorio-observacoes">Observações Detalhadas *</label>
+                                <textarea id="relatorio-observacoes" rows="6" placeholder="Ex: Durante o período observado, a criança demonstrou evolução significativa em todas as áreas de desenvolvimento..." required></textarea>
+                            </div>
+                            
+                            <!-- Áudio para relatório -->
+                            <div class="audio-section">
+                                <h4>🎤 Ou grave suas observações:</h4>
+                                <div class="audio-recorder">
+                                    <button type="button" id="relatorio-record-btn" class="btn btn-audio">
+                                        <span class="record-icon">🎤</span>
+                                        <span class="record-text">Gravar Observações</span>
+                                    </button>
+                                    <div id="relatorio-recording-status" class="recording-status">
+                                        <div class="recording-dot"></div>
+                                        <span>Gravando... Clique novamente para parar</span>
+                                    </div>
+                                </div>
+                                <div id="relatorio-audio-playback" style="display: none;">
+                                    <h5>🎵 Áudio gravado:</h5>
+                                    <audio controls style="width: 100%; margin: 8px 0;"></audio>
+                                    <div class="audio-actions">
+                                        <button type="button" class="btn btn-secondary" onclick="downloadAudio('relatorio')">
+                                            📥 Baixar Áudio
+                                        </button>
+                                        <button type="button" class="btn btn-primary" onclick="transcribeAudio('relatorio')">
+                                            📝 Converter para Texto
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="showHome()">
+                                ← Voltar
+                            </button>
+                            <button type="button" class="btn btn-primary" onclick="createDocument('relatorio')">
+                                ✨ Criar Relatório Profissional
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Ata Form (estrutura similar corrigida) -->
+            <section id="ata-form" class="section">
+                <div class="form-container">
+                    <div class="form-header">
+                        <h2>📝 Criar Ata de Reunião</h2>
+                        <p>Registro oficial de reuniões pedagógicas</p>
+                    </div>
+
+                    <form class="document-form">
+                        <!-- Dados da reunião -->
+                        <div class="form-section">
+                            <h3>📅 Dados da Reunião</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="ata-data">Data da Reunião *</label>
+                                    <input type="date" id="ata-data" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="ata-horario">Horário *</label>
+                                    <input type="time" id="ata-horario" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="ata-local">Local da Reunião</label>
+                                <input type="text" id="ata-local" placeholder="Ex: Sala da Coordenação">
+                            </div>
+                            <div class="form-group">
+                                <label for="ata-tipo">Tipo de Reunião *</label>
+                                <select id="ata-tipo" required>
+                                    <option value="">Selecione o tipo</option>
+                                    <option value="pedagogica">Reunião Pedagógica</option>
+                                    <option value="pais">Reunião de Pais</option>
+                                    <option value="equipe">Reunião de Equipe</option>
+                                    <option value="conselho">Conselho de Classe</option>
+                                    <option value="outros">Outros</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Participantes e pauta -->
+                        <div class="form-section">
+                            <h3>👥 Participantes e Pauta</h3>
+                            <div class="form-group">
+                                <label for="ata-participantes">Participantes *</label>
+                                <textarea id="ata-participantes" rows="3" placeholder="Ex: Myrian Fortuna (Coordenadora), Maria Silva (Professora), João Santos (Professor)..." required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="ata-pauta">Pauta da Reunião *</label>
+                                <textarea id="ata-pauta" rows="4" placeholder="Ex: 1. Análise do desenvolvimento das crianças; 2. Planejamento de atividades; 3. Discussão de casos específicos..." required></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Desenvolvimento da reunião com áudio -->
+                        <div class="form-section">
+                            <h3>💬 Desenvolvimento da Reunião</h3>
+                            <div class="form-group">
+                                <label for="ata-desenvolvimento">Discussões e Decisões *</label>
+                                <textarea id="ata-desenvolvimento" rows="6" placeholder="Ex: Foi discutido o desenvolvimento das crianças do Maternal II. Decidiu-se implementar novas estratégias pedagógicas..." required></textarea>
+                            </div>
+                            
+                            <!-- Áudio para ata -->
+                            <div class="audio-section">
+                                <h4>🎤 Ou grave o resumo da reunião:</h4>
+                                <div class="audio-recorder">
+                                    <button type="button" id="ata-record-btn" class="btn btn-audio">
+                                        <span class="record-icon">🎤</span>
+                                        <span class="record-text">Gravar Resumo</span>
+                                    </button>
+                                    <div id="ata-recording-status" class="recording-status">
+                                        <div class="recording-dot"></div>
+                                        <span>Gravando... Clique novamente para parar</span>
+                                    </div>
+                                </div>
+                                <div id="ata-audio-playback" style="display: none;">
+                                    <h5>🎵 Áudio gravado:</h5>
+                                    <audio controls style="width: 100%; margin: 8px 0;"></audio>
+                                    <div class="audio-actions">
+                                        <button type="button" class="btn btn-secondary" onclick="downloadAudio('ata')">
+                                            📥 Baixar Áudio
+                                        </button>
+                                        <button type="button" class="btn btn-primary" onclick="transcribeAudio('ata')">
+                                            📝 Converter para Texto
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="showHome()">
+                                ← Voltar
+                            </button>
+                            <button type="button" class="btn btn-primary" onclick="createDocument('ata')">
+                                ✨ Criar Ata Profissional
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Result Section (corrigida) -->
+            <section id="result" class="section">
+                <div class="result-container">
+                    <div class="result-header">
+                        <h2>✅ Documento Criado com Sucesso!</h2>
+                        <p>Seu documento foi gerado. Agora você pode copiar, baixar, compartilhar ou aprimorar com IA.</p>
+                    </div>
+
+                    <div class="result-content">
+                        <div class="document-preview">
+                            <textarea id="result-text" readonly></textarea>
+                        </div>
+
+                        <div class="result-actions-improved">
+                            <button type="button" class="btn btn-primary" onclick="copyToClipboard()">
+                                📋 Copiar Texto
+                            </button>
+                            
+                            <button type="button" class="btn btn-download" onclick="downloadAsWord()">
+                                📄 Baixar Word
+                            </button>
+                            
+                            <button type="button" class="btn btn-download" onclick="downloadAsPDF()">
+                                📕 Baixar PDF
+                            </button>
+                            
+                            <button type="button" class="btn btn-whatsapp" onclick="shareOnWhatsApp()">
+                                📱 Enviar WhatsApp
+                            </button>
+                            
+                            <button type="button" class="btn btn-success" onclick="sendEmail()">
+                                📧 Enviar Email
+                            </button>
+                            
+                            <button type="button" class="btn btn-secondary" onclick="showHome()">
+                                📝 Criar Novo
+                            </button>
+                        </div>
+
+                        <!-- Tutorial de IA integrado -->
+                        <div class="ai-tutorial-section" style="margin-top: 24px; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 12px;">
+                            <h3>🤖 Como aprimorar com IA:</h3>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px;">
+                                <div style="text-align: center;">
+                                    <h4>ChatGPT</h4>
+                                    <p style="font-size: 0.9rem; margin-bottom: 12px;">1. Copie o texto acima<br>2. Abra chat.openai.com<br>3. Cole: "Aprimore este documento pedagógico:"<br>4. Cole seu texto</p>
+                                    <a href="https://chat.openai.com" target="_blank" class="btn btn-ai-improved">
+                                        🤖 Abrir ChatGPT
+                                    </a>
+                                </div>
+                                <div style="text-align: center;">
+                                    <h4>Google AI</h4>
+                                    <p style="font-size: 0.9rem; margin-bottom: 12px;">1. Copie o texto acima<br>2. Abra aistudio.google.com<br>3. Cole: "Melhore este documento:"<br>4. Cole seu texto</p>
+                                    <a href="https://aistudio.google.com" target="_blank" class="btn btn-ai-improved btn-ai-google">
+                                        🎨 Abrir Google AI
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Modal de Tutorial de IA -->
+            <div id="ai-tutorial-modal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>🤖 Como Usar IA para Aprimorar Documentos</h2>
+                        <button class="modal-close" onclick="closeAITutorial()">×</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="tutorial-steps">
+                            <div class="tutorial-step">
+                                <div class="tutorial-step-number">1</div>
+                                <h4>Crie seu documento</h4>
+                                <p>Use o portal para gerar o texto base</p>
+                            </div>
+                            <div class="tutorial-step">
+                                <div class="tutorial-step-number">2</div>
+                                <h4>Copie o texto</h4>
+                                <p>Clique em "Copiar Texto" na tela de resultado</p>
+                            </div>
+                            <div class="tutorial-step">
+                                <div class="tutorial-step-number">3</div>
+                                <h4>Abra a IA</h4>
+                                <p>ChatGPT ou Google AI (links abaixo)</p>
+                            </div>
+                            <div class="tutorial-step">
+                                <div class="tutorial-step-number">4</div>
+                                <h4>Use o prompt mágico</h4>
+                                <p>"Aprimore este documento pedagógico mantendo todas as informações:"</p>
+                            </div>
+                            <div class="tutorial-step">
+                                <div class="tutorial-step-number">5</div>
+                                <h4>Cole seu texto</h4>
+                                <p>Adicione o texto do documento após o prompt</p>
+                            </div>
+                            <div class="tutorial-step">
+                                <div class="tutorial-step-number">6</div>
+                                <h4>Receba resultado</h4>
+                                <p>A IA retornará versão aprimorada em segundos</p>
+                            </div>
+                        </div>
+                        <div class="ai-buttons-container" style="margin-top: 24px;">
+                            <a href="https://chat.openai.com" target="_blank" class="btn-ai-improved">
+                                🤖 Abrir ChatGPT
+                            </a>
+                            <a href="https://aistudio.google.com" target="_blank" class="btn-ai-improved btn-ai-google">
+                                🎨 Abrir Google AI
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div id="loading" class="loading-overlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p class="loading-text">Criando documento profissional...</p>
+        </div>
+    </div>
+
+    <!-- Scripts corrigidos -->
+    <script src="js/app-fixed.js"></script>
+    
+    <script>
+        // Configuração inicial
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Portal da Myrian carregado - Versão Corrigida!');
+            
+            // Configurar data atual
+            const today = new Date().toISOString().split('T')[0];
+            const dateInputs = document.querySelectorAll('input[type="date"]');
+            dateInputs.forEach(input => {
+                if (!input.value) {
+                    input.value = today;
+                }
+            });
+            
+            // Configurar gravação de áudio
+            setupAudioRecording();
+        });
+
+        // Função para mostrar tutorial de IA
+        function showAITutorial() {
+            document.getElementById('ai-tutorial-modal').style.display = 'flex';
+        }
+
+        function closeAITutorial() {
+            document.getElementById('ai-tutorial-modal').style.display = 'none';
+        }
+
+        // Sistema de gravação corrigido
+        let audioRecorder = null;
+        let audioChunks = [];
+        let currentRecordingType = null;
+
+        async function setupAudioRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                console.log('✅ Permissão de áudio concedida');
+                
+                // Parar stream imediatamente para não manter microfone ativo
+                stream.getTracks().forEach(track => track.stop());
+                
+                // Configurar botões de gravação
+                setupRecordingButtons();
+                
+            } catch (error) {
+                console.log('❌ Permissão de áudio negada ou não disponível');
+            }
+        }
+
+        function setupRecordingButtons() {
+            const recordButtons = ['pad-record-btn', 'relatorio-record-btn', 'ata-record-btn'];
+            
+            recordButtons.forEach(buttonId => {
+                const button = document.getElementById(buttonId);
+                const type = buttonId.replace('-record-btn', '');
+                
+                if (button) {
+                    button.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        toggleRecording(type);
+                    });
+                }
+            });
+        }
+
+        async function toggleRecording(type) {
+            if (audioRecorder && audioRecorder.state === 'recording') {
+                stopRecording(type);
+            } else {
+                startRecording(type);
+            }
+        }
+
+        async function startRecording(type) {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                audioRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+                currentRecordingType = type;
+
+                audioRecorder.ondataavailable = event => {
+                    audioChunks.push(event.data);
+                };
+
+                audioRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    
+                    // Mostrar player de áudio
+                    showAudioPlayer(type, audioUrl, audioBlob);
+                    
+                    // Parar stream
+                    stream.getTracks().forEach(track => track.stop());
+                };
+
+                audioRecorder.start();
+                
+                // Atualizar UI
+                updateRecordingUI(type, true);
+                
+            } catch (error) {
+                console.error('Erro ao iniciar gravação:', error);
+                alert('Erro ao acessar microfone. Verifique as permissões.');
+            }
+        }
+
+        function stopRecording(type) {
+            if (audioRecorder && audioRecorder.state === 'recording') {
+                audioRecorder.stop();
+                updateRecordingUI(type, false);
+            }
+        }
+
+        function updateRecordingUI(type, isRecording) {
+            const button = document.getElementById(`${type}-record-btn`);
+            const status = document.getElementById(`${type}-recording-status`);
+            
+            if (isRecording) {
+                button.innerHTML = '<span class="record-icon">⏹️</span><span class="record-text">Parar Gravação</span>';
+                button.classList.add('recording');
+                if (status) status.classList.add('active');
+            } else {
+                button.innerHTML = '<span class="record-icon">🎤</span><span class="record-text">Gravar Observações</span>';
+                button.classList.remove('recording');
+                if (status) status.classList.remove('active');
+            }
+        }
+
+        function showAudioPlayer(type, audioUrl, audioBlob) {
+            const container = document.getElementById(`${type}-audio-playback`);
+            if (container) {
+                const audio = container.querySelector('audio');
+                if (audio) {
+                    audio.src = audioUrl;
+                }
+                container.style.display = 'block';
+                
+                // Armazenar blob para download
+                container.audioBlob = audioBlob;
+            }
+        }
+
+        function downloadAudio(type) {
+            const container = document.getElementById(`${type}-audio-playback`);
+            if (container && container.audioBlob) {
+                const url = URL.createObjectURL(container.audioBlob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `observacoes_${type}_${new Date().toISOString().split('T')[0]}.wav`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+        }
+
+        function transcribeAudio(type) {
+            // Implementar transcrição usando Web Speech API
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                const recognition = new SpeechRecognition();
+                
+                recognition.lang = 'pt-BR';
+                recognition.continuous = true;
+                recognition.interimResults = false;
+                
+                recognition.onresult = function(event) {
+                    let transcript = '';
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        transcript += event.results[i][0].transcript;
+                    }
+                    
+                    // Inserir texto no campo correspondente
+                    const textarea = document.getElementById(`${type}-observacoes`);
+                    if (textarea) {
+                        textarea.value = transcript;
+                    }
+                    
+                    alert('Texto transcrito e inserido no campo de observações!');
+                };
+                
+                recognition.onerror = function(event) {
+                    console.error('Erro na transcrição:', event.error);
+                    alert('Erro na transcrição. Tente novamente.');
+                };
+                
+                // Para transcrição de áudio já gravado, seria necessário uma API externa
+                alert('Para transcrever áudio gravado, copie o texto manualmente ou use uma ferramenta externa.');
+                
+            } else {
+                alert('Transcrição de áudio não suportada neste navegador. Use Chrome para melhor compatibilidade.');
+            }
+        }
+    </script>
+</body>
+</html>
+
